@@ -1,0 +1,100 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "actionGroupName": {
+            "type": "string",
+            "metadata": {
+                "description": "Unique name (within the Resource Group) for the Action group."
+            }
+        },
+        "actionGroupShortName": {
+            "type": "string",
+            "metadata": {
+                "description": "Short name (maximum 12 characters) for the Action group."
+            }
+        },
+        "actionGroupMembers": {
+            "type": "array",
+            "metadata": {
+                "description": "Email Addresses to receive the alert"
+            }
+        },
+        "sourceId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Resource ID of the Log Analytics workspace."
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Location for the alert. Must be the same location as the workspace."
+            }
+        }
+    },
+    "variables": {
+        "Recipients": {
+            "copy": [
+                {
+                    "name": "RecipientsLoop",
+                    "count": "[length(parameters('actionGroupMembers'))]",
+                    "input": {
+                        "name": "[split(parameters('actionGroupMembers')[copyIndex('RecipientsLoop')],'@')[0]]",
+                        "emailAddress": "[parameters('actionGroupMembers')[copyIndex('RecipientsLoop')]]",
+                        "useCommonAlertSchema": true
+                    }
+                }
+            ]
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Insights/actionGroups",
+            "apiVersion": "2018-03-01",
+            "name": "[parameters('actionGroupName')]",
+            "location": "Global",
+            "properties": {
+                "groupShortName": "[parameters('actionGroupShortName')]",
+                "enabled": true,
+                "emailReceivers":"[variables('Recipients').RecipientsLoop]"
+            }
+        },
+        {
+            "type": "Microsoft.Insights/scheduledQueryRules",
+            "name": "WVDAgentVersion",
+            "apiVersion": "2018-04-16",
+            "dependsOn": [
+                "[resourceId('Microsoft.Insights/actionGroups',parameters('actionGroupName'))]"
+            ],
+            "location": "[parameters('location')]",
+            "properties": {
+                "description": "WVD Agent Version changes",
+                "enabled": "true",
+                "source": {
+                    "query": "ScheduleRun_CL | where TimeGenerated > ago(30m)",
+                    "dataSourceId": "[parameters('sourceId')]",
+                    "queryType": "ResultCount"
+                },
+                "schedule": {
+                    "frequencyInMinutes": 30,
+                    "timeWindowInMinutes": 30
+                },
+                "action": {
+                    "odata.type": "Microsoft.WindowsAzure.Management.Monitoring.Alerts.Models.Microsoft.AppInsights.Nexus.DataContracts.Resources.ScheduledQueryRules.AlertingAction",
+                    "severity": "2",
+                    "aznsAction": {
+                        "actionGroup": "[array(resourceId('Microsoft.Insights/actionGroups',parameters('actionGroupName')))]",
+                        "emailSubject": "WVD Agents are being upgraded"
+                    },
+                    "trigger": {
+                        "thresholdOperator": "GreaterThan",
+                        "threshold": 0
+                    }
+                }
+            }
+        }
+    ]
+}
