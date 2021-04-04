@@ -86,14 +86,14 @@ function Get-AzVdApplicationGroup {
     #>
     [cmdletbinding(DefaultParameterSetName = "Name")]
     param(
-        [parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = "ID", Mandatory)]
+        [parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = "ID", Mandatory, HelpMessage = "Resource Id of Application Group")]
         [string]$AppGroupID,
-        [parameter(ParameterSetName = "Name", Mandatory)]
+        [parameter(ParameterSetName = "Name", Mandatory, HelpMessage="Name of Application Group")]
         [string]$Name,
-        [parameter(ParameterSetName = "HostPool", Mandatory)]
+        [parameter(ParameterSetName = "HostPool", Mandatory, HelpMessage="Name of Resource Group")]
         [parameter(ParameterSetName = "Name")]
         [string]$ResourceGroupName,
-        [parameter(ParameterSetName = "HostPool", Mandatory)]
+        [parameter(ParameterSetName = "HostPool", Mandatory, HelpMessage="Name of HostPool")]
         [string]$HostPoolName
     )
     process {
@@ -160,9 +160,9 @@ function Get-AzVdAssignment {
     #>
     [cmdletbinding()]
     param(
-        [parameter(ValueFromPipelineByPropertyName = $true, Mandatory, ParameterSetName = "Get-AzVdHostPool")]
+        [parameter(ValueFromPipelineByPropertyName = $true, Mandatory, ParameterSetName = "Get-AzVdHostPool", HelpMessage="Output of Get-AzVdHostPool")]
         [string]$AppGroupID,
-        [parameter(ValueFromPipelineByPropertyName = $true, Mandatory, ParameterSetName = "Get-AzVdApplicationGroup")]
+        [parameter(ValueFromPipelineByPropertyName = $true, Mandatory, ParameterSetName = "Get-AzVdApplicationGroup", HelpMessage="ResourceId of Application Group")]
         [string]$Id
     )
     begin {
@@ -233,7 +233,7 @@ function Get-AzVdHost {
     #>
     [cmdletbinding()]
     param(
-        [parameter(ValueFromPipelineByPropertyName = $true, Mandatory, ParameterSetName = "ID")]
+        [parameter(ValueFromPipelineByPropertyName = $true, Mandatory, ParameterSetName = "ID", HelpMessage="Resource Id of Session Host")]
         [string]$Id,
         [parameter(ValueFromPipelineByPropertyName, Mandatory, HelpMessage = "Name of the HostPool containing the Session Host", ParameterSetName = "Name")]
         [string]$HostPoolName,
@@ -301,9 +301,9 @@ function Set-AzVdLogin {
     #>
     [cmdletbinding(SupportsShouldProcess)]
     param(
-        [parameter(ValueFromPipelineByPropertyName)]
+        [parameter(ValueFromPipelineByPropertyName, HelpMessage="Resource Id of Session Host")]
         [string]$Id,
-        [parameter(Mandatory)]
+        [parameter(Mandatory, HelpMessage="Enable/Disable Drain Mode for Session Host")]
         [switch]$AllowNewSession
     )
     process {
@@ -347,11 +347,11 @@ function Get-AzVdSession {
     #>
     [cmdletbinding()]
     param(
-        [parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = "ID", Mandatory)]
+        [parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = "ID", Mandatory, HelpMessage="Resource Id of Session Host")]
         [string]$Id,
-        [parameter(ParameterSetName = "HostPool", Mandatory)]
+        [parameter(ParameterSetName = "HostPool", Mandatory, HelpMessage = "Name of the HostPool containing the Session Host")]
         [string]$HostPoolName,
-        [parameter(ParameterSetName = "HostPool", Mandatory)]
+        [parameter(ParameterSetName = "HostPool", Mandatory, HelpMessage = "Name of the Resource Group containing the HostPool")]
         [string]$ResourceGroupName
     )
     process {
@@ -385,7 +385,7 @@ function Disconnect-AzVdSession {
     #>
     [cmdletbinding()]
     param(
-        [parameter(ValueFromPipelineByPropertyName = $true, Mandatory)]
+        [parameter(ValueFromPipelineByPropertyName = $true, Mandatory, HelpMessage = "Resource Id of User Session")]
         [string]$Id
     )
     process {
@@ -412,7 +412,7 @@ function Remove-AzVdSession {
     #>
     [cmdletbinding()]
     param(
-        [parameter(ValueFromPipelineByPropertyName = $true, Mandatory)]
+        [parameter(ValueFromPipelineByPropertyName = $true, Mandatory, HelpMessage = "Resource Id of User Session")]
         [string]$Id
     )
     process {
@@ -453,10 +453,11 @@ function Stop-AzVdHost {
     #>
     [cmdletbinding(SupportsShouldProcess)]
     param(
-        [parameter(ValueFromPipelineByPropertyName)]
+        [parameter(ValueFromPipelineByPropertyName, HelpMessage = "Resource Id of Virtual Machine")]
         [string]$ResourceId,
         [parameter(HelpMessage = "Fire and forget Stop-AzVM")]
         [switch]$NoWait,
+        [parameter(HelpMessage = "Skip confirmation")]
         [switch]$Force
     )
     begin {
@@ -508,6 +509,7 @@ function Restart-AzVdHost {
         [string]$ResourceId,
         [parameter(HelpMessage = "Fire and forget Restart-AzVM")]
         [switch]$NoWait,
+        [parameter(HelpMessage = "Skip confirmation")]
         [switch]$Force
     )
     begin {
