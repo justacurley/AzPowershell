@@ -1,3 +1,4 @@
 WVD/AgentVersionCheck/workspace.ps1
 WVD/AgentVersionCheck/test.json
 WVD/HostPoolAdmin/workspace.ps1
+*unit.ps1
