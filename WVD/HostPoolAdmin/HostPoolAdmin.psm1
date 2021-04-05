@@ -485,7 +485,7 @@ function Restart-AzVdHost {
     .DESCRIPTION
         Supports pipeline input from Get-AzVdHost
     .EXAMPLE
-        PS C:\> Get-AzVdHost -HostPoolName HostPoolName -ResourceGroupName ResourceGroupName -VDName vdname001.fqdn.local | Restart-AzVdHost -Confirm:$false -Force
+        PS C:\> Get-AzVdHost -HostPoolName HostPoolName -ResourceGroupName ResourceGroupName -VDName vdname001.fqdn.local | Restart-AzVdHost 
 
         Restart a Session Host without confirmation
 
@@ -495,7 +495,7 @@ function Restart-AzVdHost {
         EndTime     : 4/4/2021 3:59:53 PM
         Error       :
     .EXAMPLE
-        PS C:\> Get-AzVdHost -HostPoolName HostPoolName -ResourceGroupName ResourceGroupName -VDName vdname001.fqdn.local | Restart-AzVdHost -Confirm:$false -Force -NoWait
+        PS C:\> Get-AzVdHost -HostPoolName HostPoolName -ResourceGroupName ResourceGroupName -VDName vdname001.fqdn.local | Restart-AzVdHost  -NoWait
 
         Request a Session Host be restarted and return to console
 
@@ -508,20 +508,13 @@ function Restart-AzVdHost {
         [parameter(ValueFromPipelineByPropertyName)]
         [string]$ResourceId,
         [parameter(HelpMessage = "Fire and forget Restart-AzVM")]
-        [switch]$NoWait,
-        [parameter(HelpMessage = "Skip confirmation")]
-        [switch]$Force
+        [switch]$NoWait
     )
-    begin {
-        if ($Force) {
-            $ConfirmPreference = 'None'
-        }
-    }
     process {
         try {
             $RestartAzVMParams = splitid $ResourceId
             if ($PSCmdlet.ShouldProcess($Name, 'Restart-AzVM')) {
-                Restart-AzVM @RestartAzVMParams -NoWait:$NoWait -Force:$Force
+                Restart-AzVM @RestartAzVMParams -NoWait:$NoWait 
             }
         }
         catch {

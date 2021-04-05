@@ -23,7 +23,7 @@ Supports pipeline input from Get-AzVdHost
 
 ### EXAMPLE 1
 ```powershell
-Get-AzVdHost -HostPoolName HostPoolName -ResourceGroupName ResourceGroupName -VDName vdname001.fqdn.local | Restart-AzVdHost -Confirm:$false -Force
+Get-AzVdHost -HostPoolName HostPoolName -ResourceGroupName ResourceGroupName -VDName vdname001.fqdn.local | Restart-AzVdHost 
 ```
 
 Restart a Session Host without confirmation
@@ -38,7 +38,7 @@ Error       :
 
 ### EXAMPLE 2
 ```powershell
-Get-AzVdHost -HostPoolName HostPoolName -ResourceGroupName ResourceGroupName -VDName vdname001.fqdn.local | Restart-AzVdHost -Confirm:$false -Force -NoWait
+Get-AzVdHost -HostPoolName HostPoolName -ResourceGroupName ResourceGroupName -VDName vdname001.fqdn.local | Restart-AzVdHost -NoWait
 ```
 
 Request a Session Host be restarted and return to console
@@ -68,21 +68,6 @@ Accept wildcard characters: False
 
 ### -NoWait
 Fire and forget Restart-AzVM
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Force
-Skip confirmation
 
 ```yaml
 Type: SwitchParameter
