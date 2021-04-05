@@ -594,8 +594,9 @@ function splitid ([string[]]$ResourceId, [hashtable]$Mapping) {
 }
 $HostPoolNameArgumentCompleter = {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-    if (!(Test-Path variable:HostPoolAdmin)) {
+    if (!(Test-Path variable:HostPoolAdmin) -or ($script:HostPoolAdminAzContext.Subscription.Id -ne (Get-AzContext).Subscription.Id)) {
         $script:HostPoolAdmin = getAllHostPool
+        $script:HostPoolAdminAzContext = Get-AzContext
     }
     $HostPoolAdmin.HostPoolName | Where-Object { $_ -like "$wordToComplete*" } |
     Foreach-Object {
@@ -605,8 +606,9 @@ $HostPoolNameArgumentCompleter = {
 }
 $ResourceGroupNameArgumentCompleter = {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-    if (!(Test-Path variable:HostPoolAdmin)) {
+    if (!(Test-Path variable:HostPoolAdmin) -or ($script:HostPoolAdminAzContext.Subscription.Id -ne (Get-AzContext).Subscription.Id)) {
         $script:HostPoolAdmin = getAllHostPool
+        $script:HostPoolAdminAzContext = Get-AzContext
     }
     if ($fakeBoundParameters.ContainsKey('HostPoolName')) {
         $HP = $fakeBoundParameters['HostPoolName']
@@ -621,7 +623,7 @@ $ResourceGroupNameArgumentCompleter = {
         }
     }
 }
-'Get-AzVdHost', 'Get-AzVdHostPool', 'Get-AzVdApplicationGroup', 'Get-AzVdSession' | Foreach-Object {
-    Register-ArgumentCompleter -CommandName $_ -ScriptBlock $HostPoolNameArgumentCompleter -ParameterName HostPoolName
-    Register-ArgumentCompleter -CommandName $_ -ScriptBlock $ResourceGroupNameArgumentCompleter -ParameterName ResourceGroupName
-}
+
+Register-ArgumentCompleter -CommandName 'Get-AzVdHost', 'Get-AzVdHostPool', 'Get-AzVdApplicationGroup', 'Get-AzVdSession'  -ScriptBlock $HostPoolNameArgumentCompleter -ParameterName HostPoolName
+Register-ArgumentCompleter -CommandName 'Get-AzVdHost', 'Get-AzVdHostPool', 'Get-AzVdApplicationGroup', 'Get-AzVdSession'  -ScriptBlock $ResourceGroupNameArgumentCompleter -ParameterName ResourceGroupName
+
