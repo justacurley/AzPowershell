@@ -172,7 +172,6 @@ try {
         StandardUninstall -RegistryUninstallStrings $uninstallstrings -Message "Uninstalling RDSInfraAgent" 
 
         Invoke-WebRequest -uri 'https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RWrmXv' -OutFile "$tmpPath\rdInfraAgent.msi"
-        $RegistrationToken = '(replacewithtoken)'
         $agent_deploy_status = Start-Process -FilePath "msiexec.exe" -ArgumentList "/i $tmpPath\rdInfraAgent.msi", "/qn", "/norestart", "REGISTRATIONTOKEN=$RegistrationToken", "/l* $tmpPath\rdInfraAgent.log" -Wait -Passthru
         Start-Service RDAgentBootLoader -Verbose
     }
